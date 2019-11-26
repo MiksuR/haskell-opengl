@@ -1,4 +1,4 @@
-cabal: Entering directory '/tmp/cabal-tmp-949531/gloss-rendering-1.13.1.1'
+cabal: Entering directory '/tmp/cabal-tmp-74540/gloss-rendering-1.13.1.1'
 Configuring gloss-rendering-1.13.1.1...
 Preprocessing library for gloss-rendering-1.13.1.1..
 Building library for gloss-rendering-1.13.1.1..
@@ -12,4 +12,4 @@ Building library for gloss-rendering-1.13.1.1..
 [8 of 9] Compiling Graphics.Gloss.Internals.Rendering.Picture ( Graphics/Gloss/Internals/Rendering/Picture.hs, dist/dist-sandbox-436ac64a/build/Graphics/Gloss/Internals/Rendering/Picture.dyn_o )
 [9 of 9] Compiling Graphics.Gloss.Rendering ( Graphics/Gloss/Rendering.hs, dist/dist-sandbox-436ac64a/build/Graphics/Gloss/Rendering.dyn_o )
 Installing library in /home/miksu/Haskell/gloss-projects/IcoWallpaper/.cabal-sandbox/lib/x86_64-linux-ghc-8.6.5/gloss-rendering-1.13.1.1-3bhALBtw0a06nA2zIkblb1
-cabal: Leaving directory '/tmp/cabal-tmp-949531/gloss-rendering-1.13.1.1'
+cabal: Leaving directory '/tmp/cabal-tmp-74540/gloss-rendering-1.13.1.1'

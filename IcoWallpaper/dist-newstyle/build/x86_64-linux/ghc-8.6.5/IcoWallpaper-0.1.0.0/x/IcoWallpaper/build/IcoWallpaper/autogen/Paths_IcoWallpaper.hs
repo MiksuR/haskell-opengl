@@ -1,7 +1,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE NoRebindableSyntax #-}
 {-# OPTIONS_GHC -fno-warn-missing-import-lists #-}
-module Paths_icosahedron (
+module Paths_IcoWallpaper (
     version,
     getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir,
     getDataFileName, getSysconfDir
@@ -30,19 +30,19 @@ version = Version [0,1,0,0] []
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
 
 bindir     = "/home/miksu/.cabal/bin"
-libdir     = "/home/miksu/.cabal/lib/x86_64-linux-ghc-8.6.5/icosahedron-0.1.0.0-inplace-icosahedron"
+libdir     = "/home/miksu/.cabal/lib/x86_64-linux-ghc-8.6.5/IcoWallpaper-0.1.0.0-inplace-IcoWallpaper"
 dynlibdir  = "/home/miksu/.cabal/lib/x86_64-linux-ghc-8.6.5"
-datadir    = "/home/miksu/.cabal/share/x86_64-linux-ghc-8.6.5/icosahedron-0.1.0.0"
-libexecdir = "/home/miksu/.cabal/libexec/x86_64-linux-ghc-8.6.5/icosahedron-0.1.0.0"
+datadir    = "/home/miksu/.cabal/share/x86_64-linux-ghc-8.6.5/IcoWallpaper-0.1.0.0"
+libexecdir = "/home/miksu/.cabal/libexec/x86_64-linux-ghc-8.6.5/IcoWallpaper-0.1.0.0"
 sysconfdir = "/home/miksu/.cabal/etc"
 
 getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir, getSysconfDir :: IO FilePath
-getBinDir = catchIO (getEnv "icosahedron_bindir") (\_ -> return bindir)
-getLibDir = catchIO (getEnv "icosahedron_libdir") (\_ -> return libdir)
-getDynLibDir = catchIO (getEnv "icosahedron_dynlibdir") (\_ -> return dynlibdir)
-getDataDir = catchIO (getEnv "icosahedron_datadir") (\_ -> return datadir)
-getLibexecDir = catchIO (getEnv "icosahedron_libexecdir") (\_ -> return libexecdir)
-getSysconfDir = catchIO (getEnv "icosahedron_sysconfdir") (\_ -> return sysconfdir)
+getBinDir = catchIO (getEnv "IcoWallpaper_bindir") (\_ -> return bindir)
+getLibDir = catchIO (getEnv "IcoWallpaper_libdir") (\_ -> return libdir)
+getDynLibDir = catchIO (getEnv "IcoWallpaper_dynlibdir") (\_ -> return dynlibdir)
+getDataDir = catchIO (getEnv "IcoWallpaper_datadir") (\_ -> return datadir)
+getLibexecDir = catchIO (getEnv "IcoWallpaper_libexecdir") (\_ -> return libexecdir)
+getSysconfDir = catchIO (getEnv "IcoWallpaper_sysconfdir") (\_ -> return sysconfdir)
 
 getDataFileName :: FilePath -> IO FilePath
 getDataFileName name = do

@@ -1,0 +1,17 @@
+module LinearEqs (
+    solve2Eq
+) where
+
+import Graphics.Gloss (Point)
+import Shapes (Vector3)
+
+type Mat2 = [[Float, Float], [Float, Float]]
+
+solve2Eq :: [[Float]] -> [Float] -> Point -- UNSAFE! Meant to work only for this particular application
+solve2Eq eqs vals = undefined
+
+getEqPair :: [[Float]] -> [Float] -> (Int, Int)
+getEqPair eqs vals = undefined -- takeWhile 
+
+inverse2x2 :: Mat2 -> Mat2
+inverse2x2 [[a,b],[c,d]] = [[d,-b],[-c,a]]

@@ -1,4 +1,4 @@
-cabal: Entering directory '/tmp/cabal-tmp-949531/OpenGL-3.0.3.0'
+cabal: Entering directory '/tmp/cabal-tmp-74540/OpenGL-3.0.3.0'
 Configuring OpenGL-3.0.3.0...
 Preprocessing library for OpenGL-3.0.3.0..
 Building library for OpenGL-3.0.3.0..
@@ -121,4 +121,4 @@ Building library for OpenGL-3.0.3.0..
 [117 of 118] Compiling Graphics.Rendering.OpenGL.GLU ( src/Graphics/Rendering/OpenGL/GLU.hs, dist/dist-sandbox-436ac64a/build/Graphics/Rendering/OpenGL/GLU.dyn_o )
 [118 of 118] Compiling Graphics.Rendering.OpenGL ( src/Graphics/Rendering/OpenGL.hs, dist/dist-sandbox-436ac64a/build/Graphics/Rendering/OpenGL.dyn_o )
 Installing library in /home/miksu/Haskell/gloss-projects/IcoWallpaper/.cabal-sandbox/lib/x86_64-linux-ghc-8.6.5/OpenGL-3.0.3.0-HvAenkQ597o9TOiw7lJNmB
-cabal: Leaving directory '/tmp/cabal-tmp-949531/OpenGL-3.0.3.0'
+cabal: Leaving directory '/tmp/cabal-tmp-74540/OpenGL-3.0.3.0'

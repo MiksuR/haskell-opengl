@@ -1,4 +1,4 @@
-cabal: Entering directory '/tmp/cabal-tmp-949531/gloss-1.13.1.1'
+cabal: Entering directory '/tmp/cabal-tmp-74540/gloss-1.13.1.1'
 Configuring gloss-1.13.1.1...
 Preprocessing library for gloss-1.13.1.1..
 Building library for gloss-1.13.1.1..
@@ -47,4 +47,4 @@ Building library for gloss-1.13.1.1..
 [43 of 44] Compiling Graphics.Gloss   ( Graphics/Gloss.hs, dist/dist-sandbox-436ac64a/build/Graphics/Gloss.dyn_o )
 [44 of 44] Compiling Graphics.Gloss.Interface.IO.Animate ( Graphics/Gloss/Interface/IO/Animate.hs, dist/dist-sandbox-436ac64a/build/Graphics/Gloss/Interface/IO/Animate.dyn_o )
 Installing library in /home/miksu/Haskell/gloss-projects/IcoWallpaper/.cabal-sandbox/lib/x86_64-linux-ghc-8.6.5/gloss-1.13.1.1-8J1dl8WahJBFdmKuJkFgWU
-cabal: Leaving directory '/tmp/cabal-tmp-949531/gloss-1.13.1.1'
+cabal: Leaving directory '/tmp/cabal-tmp-74540/gloss-1.13.1.1'

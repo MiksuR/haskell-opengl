@@ -1,4 +1,4 @@
-cabal: Entering directory '/tmp/cabal-tmp-949531/GLUT-2.7.0.15'
+cabal: Entering directory '/tmp/cabal-tmp-74540/GLUT-2.7.0.15'
 Configuring GLUT-2.7.0.15...
 Preprocessing library for GLUT-2.7.0.15..
 Building library for GLUT-2.7.0.15..
@@ -27,4 +27,4 @@ Building library for GLUT-2.7.0.15..
 [23 of 24] Compiling Graphics.UI.GLUT.Callbacks ( src/Graphics/UI/GLUT/Callbacks.hs, dist/dist-sandbox-436ac64a/build/Graphics/UI/GLUT/Callbacks.dyn_o )
 [24 of 24] Compiling Graphics.UI.GLUT ( src/Graphics/UI/GLUT.hs, dist/dist-sandbox-436ac64a/build/Graphics/UI/GLUT.dyn_o )
 Installing library in /home/miksu/Haskell/gloss-projects/IcoWallpaper/.cabal-sandbox/lib/x86_64-linux-ghc-8.6.5/GLUT-2.7.0.15-BL6G4jiawUo7c9kmoStsCY
-cabal: Leaving directory '/tmp/cabal-tmp-949531/GLUT-2.7.0.15'
+cabal: Leaving directory '/tmp/cabal-tmp-74540/GLUT-2.7.0.15'

@@ -1,4 +1,4 @@
-cabal: Entering directory '/tmp/cabal-tmp-949531/bmp-1.2.6.3'
+cabal: Entering directory '/tmp/cabal-tmp-74542/bmp-1.2.6.3'
 Warning: bmp.cabal:14:2: Tabs used as indentation at 14:2
 Configuring bmp-1.2.6.3...
 Preprocessing library for bmp-1.2.6.3..
@@ -16,4 +16,4 @@ Building library for bmp-1.2.6.3..
 [11 of 12] Compiling Codec.BMP.Unpack ( Codec/BMP/Unpack.hs, dist/dist-sandbox-436ac64a/build/Codec/BMP/Unpack.dyn_o )
 [12 of 12] Compiling Codec.BMP        ( Codec/BMP.hs, dist/dist-sandbox-436ac64a/build/Codec/BMP.dyn_o )
 Installing library in /home/miksu/Haskell/gloss-projects/IcoWallpaper/.cabal-sandbox/lib/x86_64-linux-ghc-8.6.5/bmp-1.2.6.3-5I0Urr4KLkm5qE2wNumCpo
-cabal: Leaving directory '/tmp/cabal-tmp-949531/bmp-1.2.6.3'
+cabal: Leaving directory '/tmp/cabal-tmp-74542/bmp-1.2.6.3'
