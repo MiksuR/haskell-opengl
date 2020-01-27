@@ -9,7 +9,8 @@ import Camera
 main :: IO ()
 main = do
         screenSize <- getScreenSize
-        animate FullScreen black ((color white) . (frameAt screenSize))
+        -- animate FullScreen black ((color white) . (frameAt screenSize))
+        animate (InWindow "Ico" (200, 200) (10, 10)) black ((color white) . (frameAt screenSize))
 
 frameAt :: (Int, Int) -> Float -> Picture
 frameAt size time = renderScene camera size (scene time)

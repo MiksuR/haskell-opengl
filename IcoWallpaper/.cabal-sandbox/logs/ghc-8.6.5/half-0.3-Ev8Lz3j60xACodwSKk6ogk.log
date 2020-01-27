@@ -1,7 +1,0 @@
-cabal: Entering directory '/tmp/cabal-tmp-74543/half-0.3'
-Configuring half-0.3...
-Preprocessing library for half-0.3..
-Building library for half-0.3..
-[1 of 1] Compiling Numeric.Half     ( src/Numeric/Half.hs, dist/dist-sandbox-436ac64a/build/Numeric/Half.dyn_o )
-Installing library in /home/miksu/Haskell/gloss-projects/IcoWallpaper/.cabal-sandbox/lib/x86_64-linux-ghc-8.6.5/half-0.3-Ev8Lz3j60xACodwSKk6ogk
-cabal: Leaving directory '/tmp/cabal-tmp-74543/half-0.3'
