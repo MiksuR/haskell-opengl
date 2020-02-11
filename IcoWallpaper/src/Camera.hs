@@ -1,11 +1,13 @@
+{-# LANGUAGE StrictData #-}
+
 module Camera (
     Scene,
     Camera(..),
-    renderNormal,
+    --renderNormal,
     renderBlurred
 ) where
 
-import Graphics.Gloss hiding (Line)
+import Graphics.Rendering.OpenGL.GL.VertexSpec (Color4)
 import LinearEqs
 import Shapes
 
@@ -16,12 +18,15 @@ data Camera = Camera {
     dir :: Vector3,
     width :: Float,
     dist :: Float}
+type Picture = [Color4 Float]
 type Renderer = Camera -> (Int, Int) -> Scene -> Picture
 
 -- Renderers
+{--
 renderNormal :: Renderer
 renderNormal c screen scen = pictures . concat $ map shapeToLines scen
         where shapeToLines = map $ line . (projectEdge c screen)
+--}
 
 renderBlurred :: Renderer
 renderBlurred c screen scen = pointsToPicture $ map shapeToPoints scen

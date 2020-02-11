@@ -1,4 +1,8 @@
+{-# LANGUAGE StrictData #-}
+
 module LinearEqs (
+    Point (..),
+    Path (..),
     Vector3(..),
     Eq2(..),
     vAdd,
@@ -15,9 +19,10 @@ module LinearEqs (
     rotationZ
 ) where
 
-import Graphics.Gloss (Point)
 
 -- Primitive type definitions
+type Point = (Float, Float)
+type Path = [Point]
 data Vector3 = Vector3 Float Float Float deriving (Eq, Show)
 data Mat2 = Mat2 {x11 :: Float, x12 :: Float, x21 :: Float, x22 :: Float}
 data Mat3 = Mat3 Float Float Float Float Float Float Float Float Float

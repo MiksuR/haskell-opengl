@@ -1,3 +1,5 @@
+{-# LANGUAGE StrictData #-}
+
 module Shapes (
     Edge(..),
     Line(..),
@@ -11,7 +13,6 @@ module Shapes (
     uprightIco
 ) where
 
-import Graphics.Gloss (Point)
 import LinearEqs
 
 -- Primitive type definitions
