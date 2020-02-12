@@ -1,15 +1,15 @@
 /home/miksu/Haskell/gloss-projects/IcoWallpaper/src/Shapes.hs:
   hash: 84c54c89794f44603d9d03487be9c8d87a239780530d7fddfed6f77c2de3e8d6
   size: 2807
-  modtime: 1581444976
+  modtime: 1581540330
 /home/miksu/Haskell/gloss-projects/IcoWallpaper/src/Main.hs:
-  hash: 20df58fa4e46e2bfdf39b7caafffeee2ed2081eb96697fc9c228f341e1b4e47b
-  size: 1613
-  modtime: 1581447517
+  hash: 72d8468d0fa4fea62de0f137ea3a86ead88e438b8975e167192828168954cb15
+  size: 1615
+  modtime: 1581540094
 /home/miksu/Haskell/gloss-projects/IcoWallpaper/src/LinearEqs.hs:
   hash: 6c91d039d42a17bf1b1004459d4aefca242d4ecc88e4d57451f6caf833020160
   size: 3512
-  modtime: 1581444953
+  modtime: 1581539723
 /home/miksu/Haskell/gloss-projects/IcoWallpaper/CHANGELOG.md:
   hash: 24b715422d5996f36c4ba0ad2d8cee43744f441113bb18932b29a90a69ff9e7f
   size: 115
@@ -17,8 +17,8 @@
 /home/miksu/Haskell/gloss-projects/IcoWallpaper/IcoWallpaper.cabal:
   hash: 16483b7932056d2fd6d55a001a84d30871cc3fc8ecb8cdba7660141284846014
   size: 1981
-  modtime: 1580153379
+  modtime: 1581448022
 /home/miksu/Haskell/gloss-projects/IcoWallpaper/src/Camera.hs:
-  hash: 161bc5705fa9ef07711d4bff41dc6ba146c779eea3f313bf723c0b9282b46a72
-  size: 1652
-  modtime: 1581444968
+  hash: eab668ac359df34957d5908dd07066074ac8f4a7616545e8ec6b0d63aa13afab
+  size: 1735
+  modtime: 1581541018
