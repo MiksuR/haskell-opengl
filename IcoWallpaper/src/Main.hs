@@ -24,20 +24,27 @@ main = do
   GLFW.setWindowCloseCallback win (Just shutdown)
   GL.clearColor $= Color4 0 0 0 0
   -- (winX, winY) <- GLFW.getWindowSize win
+  {--
   forever $ do
     GLFW.pollEvents
     Just time <- GLFW.getTime
-    drawScene (winX, winY) camera $ scene 0 -- time
+    drawScene (winX, winY) camera $ scene 1 -- time
     GLFW.swapBuffers win
+  --}
+  drawScene win (winX, winY) camera scene
 -- animate FullScreen black ((color white) . (frameAt screenSize))
 -- animate (InWindow "Ico" (200, 200) (10, 10)) black ((color white) . (frameAt screenSize))
 
-drawScene :: (Int, Int) -> Camera -> Scene -> IO ()
-drawScene size camera scene = do
+drawScene :: GLFW.Window -> (Int, Int) -> Camera -> (Float -> Scene) -> IO ()
+drawScene w size cam sc = do
+  GLFW.pollEvents
+  Just time <- GLFW.getTime
   GL.clear $ [ColorBuffer]
   GL.loadIdentity
 
-  renderNormal size camera scene
+  renderNormal size cam (sc . fromRational . toRational $ time)
+  GLFW.swapBuffers w
+  drawScene w size cam sc
 
 shutdown :: GLFW.WindowCloseCallback
 shutdown win = do
@@ -50,4 +57,4 @@ scene :: Float -> Scene
 scene time = [rotateShape 0 0 time uprightIco]
 
 camera :: Camera
-camera = Camera (Vector3 5 0 0) (Vector3 (-1) 0 0) 0.5 0.25
+camera = Camera (Vector3 5 0 0) (Vector3 (-1) 0 0) 0.5 0.45

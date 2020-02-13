@@ -2,7 +2,7 @@
 
 module LinearEqs (
     Point (..),
-    Path (..),
+    --Path (..),
     Vector3(..),
     Eq2(..),
     vAdd,

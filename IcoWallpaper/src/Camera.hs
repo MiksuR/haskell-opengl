@@ -4,7 +4,7 @@ module Camera (
     Scene,
     Camera(..),
     renderNormal,
-    renderBlurred
+    renderBlurred,
 ) where
 
 import Graphics.Rendering.OpenGL as GL
@@ -20,19 +20,16 @@ data Camera = Camera {
     dist :: Float}
 type Renderer = (Int, Int) -> Camera -> Scene -> IO()
 
-renderNormal :: Renderer
-renderNormal (w, h) cam scene = GL.renderPrimitive GL.Lines $ do
-    GL.color (Color3 1.0 1.0 1.0 :: Color3 Float)
-    GL.vertex (GL.Vertex2 0.0 0.0 :: Vertex2 Float)
-    GL.vertex (GL.Vertex2 100.0 100.0 :: Vertex2 Float)
-    GL.vertex (GL.Vertex2 0.0 0.0 :: Vertex2 Float)
-    GL.vertex (GL.Vertex2 (-100.0) (-100.0) :: Vertex2 Float)
-    GL.vertex (GL.Vertex2 0.0 0.0 :: Vertex2 Float)
-    GL.vertex (GL.Vertex2 100.0 (-100.0) :: Vertex2 Float)
-    GL.vertex (GL.Vertex2 0.0 0.0 :: Vertex2 Float)
-    GL.vertex (GL.Vertex2 (-100.0) 100.0 :: Vertex2 Float)
-
 -- Renderers
+renderNormal :: Renderer
+renderNormal screen cam scene = GL.renderPrimitive GL.Lines $
+    GL.color (Color3 1.0 1.0 1.0 :: Color3 Float) >>=
+    (\_ -> sequence_ $ map vertexify pointList)
+  where
+    pointList = concatMap (concatMap $ projectEdge cam screen) scene
+    --pointList = [(0, 0), (0, 1), (0, 0), (1, 0), (0, 0), (-1, 0), (0, 0), (0, -1)] :: [(Float, Float)]
+    vertexify (a, b) = vertex $ Vertex2 (a/(fromIntegral $ fst screen)) (b/(fromIntegral $ snd screen))
+
 {--
 renderNormal :: Renderer
 renderNormal c screen scen = pictures . concat $ map shapeToLines scen
@@ -55,7 +52,7 @@ projectPoint camera screen point = scale $ planeCoordinates plane (planeBasis pl
         scale (a, b) = (a*ratio, b*ratio)
         ratio = (fromIntegral $ fst screen) / (width camera)
 
-projectEdge :: Camera -> (Int, Int) -> Edge -> Path
+projectEdge :: Camera -> (Int, Int) -> Edge -> [Point]
 projectEdge camera screen (Edge a b) = map (projectPoint camera screen) [a, b]
 
 projectBlurredEdge :: Camera -> (Int, Int) -> Edge -> [Point]

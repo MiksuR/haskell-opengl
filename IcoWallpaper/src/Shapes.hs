@@ -10,7 +10,8 @@ module Shapes (
     planeBasis,
     planeCoordinates,
     icosahedron,
-    uprightIco
+    uprightIco,
+    cube,
 ) where
 
 import LinearEqs
@@ -70,6 +71,21 @@ ip9 = Vector3 0 phi (-1)
 ip10 = Vector3 0 (-phi) (-1)
 ip11 = Vector3 1 0 (-phi)
 ip12 = Vector3 (-1) 0 (-phi)
+
+cp1 = Vector3 (-1) (-1) (-1)
+cp2 = Vector3 (1) (-1) (-1)
+cp3 = Vector3 (-1) (1) (-1)
+cp4 = Vector3 (-1) (-1) (1)
+cp5 = Vector3 (-1) (1) (1)
+cp6 = Vector3 (1) (-1) (1)
+cp7 = Vector3 (1) (1) (-1)
+cp8 = Vector3 (1) (1) (1)
+
+cube :: Shape
+cube = [Edge cp1 cp2, Edge cp2 cp7,
+        Edge cp7 cp8, Edge cp8 cp6,
+        Edge cp6 cp4, Edge cp4 cp5,
+        Edge cp5 cp3, Edge cp3 cp1]
 
 icosahedron :: Shape
 icosahedron = [Edge ip1 ip2,
