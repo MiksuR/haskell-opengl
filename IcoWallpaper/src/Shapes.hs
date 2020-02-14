@@ -35,22 +35,25 @@ data Plane = Plane { p :: Vector3, n :: Vector3} -- point and normal
 
 linePlaneIntrsct :: Line -> Plane -> Vector3
 linePlaneIntrsct (Line l0 l1) plane = d `sProd` (l1 `vSubs` l0) `vAdd` l0
-    where d = (((p plane) `vSubs` l0) `vDot` (n plane))/(l1 `vSubs` l0 `vDot` (n plane))
+  where d = (((p plane) `vSubs` l0) `vDot` (n plane))/(l1 `vSubs` l0 `vDot` (n plane))
 
 type Basis = (Vector3, Vector3)
 
-planeBasis :: Plane -> Basis
-planeBasis (Plane p n) = (planeX, planeY)
-    where
-        planeX = vNormalize $ (Vector3 0 0 1) `vCross` n
-        planeY = vNormalize $ planeX `vCross` n
+planeBasis :: Plane -> Maybe Basis
+planeBasis (Plane p n) = (,) <$> planeX <*> planeY
+  where
+    planeX :: Maybe Vector3
+    planeX = vNormalize $ (Vector3 0 0 1) `vCross` n
+    planeY :: Maybe Vector3
+    planeY = (vCross <$> planeX <*> Just n) >>= vNormalize
 
-planeCoordinates :: Plane -> Basis -> Vector3 -> Point
+-- Given a plane, a basis on the plane and a point on the plane, return a 2D coordinates of the point on the plane.
+planeCoordinates :: Plane -> Basis -> Vector3 -> Maybe Point
 planeCoordinates (Plane (Vector3 px py pz) _) ((Vector3 xx xy xz), (Vector3 yx yy yz)) (Vector3 a b c) = solve2Eqs [eq0, eq1, eq2]
-    where
-        eq0 = Eq2 xx yx (a-px)
-        eq1 = Eq2 xy yy (b-py)
-        eq2 = Eq2 xz yz (c-pz)
+  where
+    eq0 = Eq2 xx yx (a-px)
+    eq1 = Eq2 xy yy (b-py)
+    eq2 = Eq2 xz yz (c-pz)
 
 lerp :: Line -> Float -> Vector3
 lerp (Line a b) t = vAdd a $ sProd t $ b `vSubs` a

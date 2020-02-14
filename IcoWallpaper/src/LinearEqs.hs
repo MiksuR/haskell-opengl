@@ -18,6 +18,9 @@ module LinearEqs (
     rotationZ,
 ) where
 
+import Control.Monad ((>=>))
+import Data.Maybe (listToMaybe)
+import Data.Monoid ((<>))
 
 -- Primitive type definitions
 type Point = (Float, Float)
@@ -38,8 +41,9 @@ vDot :: Vector3 -> Vector3 -> Float
 vDot (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = x0*x1 + y0*y1+ z0*z1
 vCross :: Vector3 -> Vector3 -> Vector3
 vCross (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = Vector3 (y0*z1-y1*z0) (x0*z1-x1*z0) (x0*y1-x1*y0)
-vNormalize :: Vector3 -> Vector3
-vNormalize (Vector3 x y z) = Vector3 (x/mag) (y/mag) (z/mag)
+vNormalize :: Vector3 -> Maybe Vector3
+vNormalize (Vector3 0 0 0) = Nothing
+vNormalize (Vector3 x y z) = Just $ Vector3 (x/mag) (y/mag) (z/mag)
     where mag = sqrt $ x*x + y*y + z*z
 mProd :: Mat3 -> Mat3 -> Mat3
 mProd (Mat3 x11 x12 x13 x21 x22 x23 x31 x32 x33) (Mat3 y11 y12 y13 y21 y22 y23 y31 y32 y33) = 
@@ -56,8 +60,9 @@ mProd (Mat3 x11 x12 x13 x21 x22 x23 x31 x32 x33) (Mat3 y11 y12 y13 y21 y22 y23 y
 determinant :: Mat2 -> Float
 determinant (Mat2 a b c d) = a*d-b*c
 
-inverse2x2 :: Mat2 -> Mat2
-inverse2x2 (Mat2 a b c d) = Mat2 (d/det) (-b/det) (-c/det) (a/det)
+inverse2x2 :: Mat2 -> Maybe Mat2
+inverse2x2 (Mat2 a b c d) | det == 0 = Nothing
+                          | otherwise = Just $ Mat2 (d/det) (-b/det) (-c/det) (a/det)
   where det = a*d-b*c
 
 transform2 :: Mat2 -> Point -> Point
@@ -78,15 +83,17 @@ rotationZ :: Float -> Mat3
 rotationZ angle = Mat3 (cos angle) (-sin angle) 0 (sin angle) (cos angle) 0 0 0 1
 
 -- Systems of equations
-solve2Eqs :: Eqs -> Point -- Gives only the first solution it finds.
-solve2Eqs = solve2Eq . getEqPair
+solve2Eqs :: Eqs -> Maybe Point -- Gives only the first solution it finds.
+solve2Eqs = getEqPair >=> solve2Eq
 
-solve2Eq :: (Eq2, Eq2) -> Point -- Solve a pair of equations with two variables
-solve2Eq ((Eq2 eq00 eq01 val0), (Eq2 eq10 eq11 val1)) = inverse2x2 (Mat2 eq00 eq01 eq10 eq11) `transform2` (val0, val1)
+solve2Eq :: (Eq2, Eq2) -> Maybe Point -- Solve a pair of equations with two variables
+solve2Eq ((Eq2 eq00 eq01 val0), (Eq2 eq10 eq11 val1)) = transform2 <$> inverse2x2 (Mat2 eq00 eq01 eq10 eq11) <*> Just (val0, val1)
 
-getEqPair :: Eqs -> (Eq2, Eq2) -- Get a pair of equations with zero determinant from a list of equations
-getEqPair eqs = head $ dropWhile zeroDeterminant $ pairs eqs
+getEqPair :: Eqs -> Maybe (Eq2, Eq2) -- Get a pair of equations with zero determinant from a list of equations
+getEqPair eqs = pairs eqs >>= (listToMaybe . dropWhile (zeroDeterminant))
   where
-    pairs (x:xs) = (map ((,) x) xs) ++ (pairs xs)
+    pairs :: Eqs -> Maybe [(Eq2, Eq2)]
+    pairs [] = Nothing
+    pairs [_] = Nothing
+    pairs (x:xs) = Just (map ((,) x) xs) <> (pairs xs)
     zeroDeterminant ((Eq2 eq00 eq01 _), (Eq2 eq10 eq11 _)) = determinant (Mat2 eq00 eq01 eq10 eq11) == 0
-
