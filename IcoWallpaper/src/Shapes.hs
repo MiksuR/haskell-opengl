@@ -9,6 +9,7 @@ module Shapes (
     linePlaneIntrsct,
     planeBasis,
     planeCoordinates,
+    lerp,
     icosahedron,
     uprightIco,
 ) where
@@ -55,8 +56,8 @@ planeCoordinates (Plane (Vector3 px py pz) _) ((Vector3 xx xy xz), (Vector3 yx y
     eq1 = Eq2 xy yy (b-py)
     eq2 = Eq2 xz yz (c-pz)
 
-lerp :: Line -> Float -> Vector3
-lerp (Line a b) t = vAdd a $ sProd t $ b `vSubs` a
+lerp :: Edge -> Float -> Vector3
+lerp (Edge a b) t = vAdd a $ sProd t $ b `vSubs` a
 
 -- Icosahedron points
 phi = (1 + (sqrt $ 5))/2

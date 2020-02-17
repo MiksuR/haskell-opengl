@@ -9,7 +9,9 @@ module LinearEqs (
     sProd,
     vDot,
     vCross,
+    vDist,
     vNormalize,
+    fromSpherical,
     mProd,
     solve2Eqs,
     transform3,
@@ -18,6 +20,7 @@ module LinearEqs (
     rotationZ,
 ) where
 
+import Control.Applicative (liftA2)
 import Control.Monad ((>=>))
 import Data.Maybe (listToMaybe)
 import Data.Monoid ((<>))
@@ -25,7 +28,7 @@ import Data.Monoid ((<>))
 -- Primitive type definitions
 type Point = (Float, Float)
 data Vector3 = Vector3 Float Float Float deriving (Eq, Show)
-data Mat2 = Mat2 {x11 :: Float, x12 :: Float, x21 :: Float, x22 :: Float}
+data Mat2 = Mat2 Float Float Float Float
 data Mat3 = Mat3 Float Float Float Float Float Float Float Float Float
 data Eq2 = Eq2 {eq0 :: Float, eq1 :: Float, val :: Float} deriving Show -- eq0*x + eq1*y = val, where x and y are the variables
 type Eqs = [Eq2] -- System of equations of two variables
@@ -44,7 +47,18 @@ vCross (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = Vector3 (y0*z1-y1*z0) (x0*z1-x1*z
 vNormalize :: Vector3 -> Maybe Vector3
 vNormalize (Vector3 0 0 0) = Nothing
 vNormalize (Vector3 x y z) = Just $ Vector3 (x/mag) (y/mag) (z/mag)
-    where mag = sqrt $ x*x + y*y + z*z
+  where mag = sqrt $ x*x + y*y + z*z
+vDist :: Vector3 -> Vector3 -> Float
+vDist (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = sqrt $ (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1)
+-- inclination theta in [0, pi], azimuth phi in [0, 2pi[.
+fromSpherical :: Float -> Float -> Vector3
+fromSpherical theta phi = Vector3 x y z
+  where
+    x = (sin theta) * (cos phi)
+    y = (sin theta) * (sin phi)
+    z = cos theta
+
+-- Matrices and linear transforms
 mProd :: Mat3 -> Mat3 -> Mat3
 mProd (Mat3 x11 x12 x13 x21 x22 x23 x31 x32 x33) (Mat3 y11 y12 y13 y21 y22 y23 y31 y32 y33) = 
     Mat3 (x1 `vDot` y1) (x1 `vDot` y2) (x1 `vDot` y3) (x2 `vDot` y1) (x2 `vDot` y2) (x2 `vDot` y3) (x3 `vDot` y1) (x3 `vDot` y2) (x3 `vDot` y3)
@@ -56,7 +70,6 @@ mProd (Mat3 x11 x12 x13 x21 x22 x23 x31 x32 x33) (Mat3 y11 y12 y13 y21 y22 y23 y
     y2 = Vector3 y12 y22 y32
     y3 = Vector3 y13 y23 y33
 
--- Matrices and linear transforms
 determinant :: Mat2 -> Float
 determinant (Mat2 a b c d) = a*d-b*c
 
@@ -87,7 +100,7 @@ solve2Eqs :: Eqs -> Maybe Point -- Gives only the first solution it finds.
 solve2Eqs = getEqPair >=> solve2Eq
 
 solve2Eq :: (Eq2, Eq2) -> Maybe Point -- Solve a pair of equations with two variables
-solve2Eq ((Eq2 eq00 eq01 val0), (Eq2 eq10 eq11 val1)) = transform2 <$> inverse2x2 (Mat2 eq00 eq01 eq10 eq11) <*> Just (val0, val1)
+solve2Eq ((Eq2 eq00 eq01 val0), (Eq2 eq10 eq11 val1)) = liftA2 transform2 (inverse2x2 (Mat2 eq00 eq01 eq10 eq11)) (Just (val0, val1))
 
 getEqPair :: Eqs -> Maybe (Eq2, Eq2) -- Get a pair of equations with zero determinant from a list of equations
 getEqPair eqs = pairs eqs >>= (listToMaybe . dropWhile (zeroDeterminant))

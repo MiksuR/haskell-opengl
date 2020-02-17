@@ -2,7 +2,11 @@ module Main where
 
 import Graphics.Rendering.OpenGL as GL hiding (Vector3)
 import Graphics.UI.GLFW as GLFW
+
+import Control.Exception (finally)
+import GHC.Float (double2Float)
 import System.Exit (exitWith, ExitCode(..))
+
 import LinearEqs
 import Shapes
 import Camera
@@ -21,10 +25,7 @@ main = do
   GLFW.makeContextCurrent (Just win)
   GLFW.setWindowCloseCallback win (Just shutdown)
   GL.clearColor $= Color4 0 0 0 0
-  drawScene win (winX, winY) camera scene
-  shutdown win
--- animate FullScreen black ((color white) . (frameAt screenSize))
--- animate (InWindow "Ico" (200, 200) (10, 10)) black ((color white) . (frameAt screenSize))
+  finally (drawScene win (winX, winY) camera scene) (shutdown win)
 
 scene :: Float -> Scene
 scene time = [rotateShape 0 0 time uprightIco]
@@ -39,8 +40,11 @@ drawScene w size cam sc = do
   GL.clear $ [ColorBuffer]
   GL.loadIdentity
 
-  -- TODO: Do the Double -> Float conversion correctly.
-  renderNormal size cam (sc . fromRational . toRational $ time)
+  --renderNormal size cam (sc . double2Float $ time)
+  renderBlurred (Blur 5 1.2 1) 10 1 size cam (sc . double2Float $ time)
+
+  GL.get GL.errors >>= mapM_ print
+  GL.flush
   GLFW.swapBuffers w
   drawScene w size cam sc
 
@@ -50,3 +54,4 @@ shutdown win = do
   GLFW.terminate
   _ <- exitWith ExitSuccess
   return ()
+
