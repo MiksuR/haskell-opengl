@@ -12,12 +12,13 @@ module Shapes (
     lerp,
     icosahedron,
     uprightIco,
+    phi,
 ) where
 
 import LinearEqs
 
 -- Primitive type definitions
-data Edge = Edge Vector3 Vector3
+data Edge = Edge Vector3 Vector3 deriving Show
 instance Eq Edge where
     Edge a b == Edge c d
         = (a == c && b == d) || (a == d && b == c)
