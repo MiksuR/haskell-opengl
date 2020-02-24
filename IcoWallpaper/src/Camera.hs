@@ -22,7 +22,6 @@ type Scene = [Shape]
 data Camera = Camera {
     pos :: Vector3,
     dir :: Vector3,
-    width :: Float,
     dist :: Float}
 type Renderer = (Int, Int) -> Camera -> Scene -> IO()
 -- The three Floats correspond to f, m and e in the inconvergent's article
@@ -37,7 +36,8 @@ renderNormal screen cam scene = GL.renderPrimitive GL.Lines $
     lineList :: Shape -> [ScreenLine]
     lineList shape = catMaybes $ map (projectEdge cam screen) shape
     vertexify :: Point -> IO ()
-    vertexify (a, b) = GL.vertex $ GL.Vertex2 (a/(fromIntegral $ fst screen)) (b/(fromIntegral $ snd screen))
+    vertexify (a, b) = GL.vertex $ GL.Vertex2 a (b*ratio)
+    ratio = (fromIntegral $ fst screen)/(fromIntegral $ snd screen)
     lineify :: ScreenLine -> IO ()
     lineify (a, b) = vertexify a >> vertexify b
 
@@ -47,7 +47,8 @@ renderBlurred rand params samples alpha screen cam scene = GL.renderPrimitive GL
     (sequence_ $ map vertexify $ concatMap (catMaybes . maybeBlur) scene)
   where
     vertexify :: Point -> IO ()
-    vertexify (a, b) = GL.vertex $ GL.Vertex2 (a/(fromIntegral $ fst screen)) (b/(fromIntegral $ snd screen))
+    vertexify (a, b) = GL.vertex $ GL.Vertex2 a (b*ratio)
+    ratio = (fromIntegral $ fst screen)/(fromIntegral $ snd screen)
     maybeBlur :: Shape -> [Maybe Point]
     maybeBlur = concatMap (projectBlurredEdge rand params samples cam screen)
 
@@ -62,13 +63,11 @@ renderBlurredDistort = undefined
 -- TODO 3: Maybe add orthographic projections later.
 -- TODO 4: Remove scaling here and in render functions, because OpenGL assumes 1 x 1 screen.
 projectPoint :: Camera -> (Int, Int) -> Vector3 -> Maybe Point
-projectPoint camera screen point = fmap scale $ (planeBasis plane) >>= (\basis -> planeCoordinates plane basis intersection)
+projectPoint camera screen point = (planeBasis plane) >>= (\basis -> planeCoordinates plane basis intersection)
   where
     center = (pos camera) `vAdd` ((dist camera) `sProd` (dir camera))
     plane = Shapes.Plane center (dir camera)
     intersection = linePlaneIntrsct (Shapes.Line (pos camera) point) plane
-    scale (a, b) = (a*ratio, b*ratio)
-    ratio = (fromIntegral $ fst screen) / (width camera)
 
 projectDisplaced :: BlurParams -> Camera -> (Int, Int) -> (Vector3, StdGen) -> Maybe Point
 projectDisplaced (Blur f m e) camera screen (point, rand)= projectPoint camera screen displaced

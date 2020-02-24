@@ -37,15 +37,13 @@ scene time = [rotateIco uprightIco]
     rotateIco = (rotateShape (-(atan $ 1/phi)) 0 0) . (rotateShape 0 0 (time/2))
 
 maybeCamera :: Maybe Camera
-maybeCamera = (\dir -> Camera (Vector3 3 (-1.8) (1.6)) dir 0.5 0.45) <$>
+maybeCamera = (\dir -> Camera (Vector3 3 (-1.8) (1.6)) dir 0.95) <$>
   (vNormalize $ Vector3 (-1) 0 (-0.2))
 
 normalCamera :: Camera
-normalCamera = Camera (Vector3 3 (0) (1.6)) (norm $ Vector3 (-1) (-0.5) (-0.2)) 0.5 0.45
+normalCamera = Camera (Vector3 3 (0) (1.6)) (norm $ Vector3 (-1) (-0.5) (-0.2)) 0.95
   where
     norm (Vector3 a b c) = Vector3 (a/(sqrt $ a*a + b*b + c*c)) (b/(sqrt $ a*a + b*b + c*c)) (c/(sqrt $ a*a + b*b + c*c))
-
-camera = Camera (Vector3 3 (-1.8) (1.6)) (Vector3 (-1) 0 (-0.2)) 0.5 0.45
 
 drawScene :: GLFW.Window -> (Int, Int) -> IO ()
 drawScene w size= do
@@ -56,7 +54,7 @@ drawScene w size= do
 
   -- TODO: Write a monad transformer for this...
   -- Just camera <- maybeCamera
-  -- renderNormal size camera (scene . double2Float $ time)
+  -- renderNormal size normalCamera (scene . double2Float $ time)
   rand <- newStdGen --      f   m   e
   renderBlurred rand (Blur 3.0 0.1 1.8) 1000 0.2 size normalCamera (scene . double2Float $ time)
 
