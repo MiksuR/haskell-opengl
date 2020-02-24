@@ -60,6 +60,7 @@ renderBlurredDistort = undefined
 -- TODO 1: Make it so that projectPoint returns Nothing when the target point is on the wrong side of the plane i.e. camera cannot see it.
 -- TODO 2: Come up with a way to handle the case when only the other end of an edge is Nothing in projectEdge function.
 -- TODO 3: Maybe add orthographic projections later.
+-- TODO 4: Remove scaling here and in render functions, because OpenGL assumes 1 x 1 screen.
 projectPoint :: Camera -> (Int, Int) -> Vector3 -> Maybe Point
 projectPoint camera screen point = fmap scale $ (planeBasis plane) >>= (\basis -> planeCoordinates plane basis intersection)
   where

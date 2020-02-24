@@ -43,7 +43,8 @@ sProd a (Vector3 x y z) = Vector3 (a*x) (a*y) (a*z)
 vDot :: Vector3 -> Vector3 -> Float
 vDot (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = x0*x1 + y0*y1+ z0*z1
 vCross :: Vector3 -> Vector3 -> Vector3
-vCross (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = Vector3 (y0*z1-y1*z0) (x0*z1-x1*z0) (x0*y1-x1*y0)
+vCross (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = Vector3 (y0*z1-y1*z0) (x1*z0-x0*z1) (x0*y1-x1*y0)
+--vCross (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = Vector3 (y0*z1-y1*z0) (x0*z1-x1*z0) (x0*y1-x1*y0)
 vNormalize :: Vector3 -> Maybe Vector3
 vNormalize (Vector3 0 0 0) = Nothing
 vNormalize (Vector3 x y z) = Just $ Vector3 (x/mag) (y/mag) (z/mag)

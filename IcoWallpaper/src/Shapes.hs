@@ -44,9 +44,7 @@ type Basis = (Vector3, Vector3)
 planeBasis :: Plane -> Maybe Basis
 planeBasis (Plane p n) = (,) <$> planeX <*> planeY
   where
-    planeX :: Maybe Vector3
-    planeX = vNormalize $ (Vector3 0 0 1) `vCross` n
-    planeY :: Maybe Vector3
+    planeX = vNormalize $ n `vCross` (Vector3 0 0 1)
     planeY = (vCross <$> planeX <*> Just n) >>= vNormalize
 
 -- Given a plane, a basis on the plane and a point on the plane, return a 2D coordinates of the point on the plane.
