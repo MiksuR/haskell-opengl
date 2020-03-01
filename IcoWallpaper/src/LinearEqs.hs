@@ -1,4 +1,4 @@
-{-# LANGUAGE StrictData #-}
+{-# LANGUAGE StrictData, TupleSections #-}
 
 module LinearEqs (
     Point,
@@ -45,9 +45,9 @@ vDot (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = x0*x1 + y0*y1+ z0*z1
 vCross :: Vector3 -> Vector3 -> Vector3
 vCross (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = Vector3 (y0*z1-y1*z0) (x1*z0-x0*z1) (x0*y1-x1*y0)
 --vCross (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = Vector3 (y0*z1-y1*z0) (x0*z1-x1*z0) (x0*y1-x1*y0)
-vNormalize :: Vector3 -> Maybe Vector3
-vNormalize (Vector3 0 0 0) = Nothing
-vNormalize (Vector3 x y z) = Just $ Vector3 (x/mag) (y/mag) (z/mag)
+vNormalize :: Vector3 -> Either String Vector3
+vNormalize (Vector3 0 0 0) = Left "Error: Cannot normalize the zero vector."
+vNormalize (Vector3 x y z) = Right $ Vector3 (x/mag) (y/mag) (z/mag)
   where mag = sqrt $ x*x + y*y + z*z
 vDist :: Vector3 -> Vector3 -> Float
 vDist (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = sqrt $ (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1)
@@ -55,8 +55,8 @@ vDist (Vector3 x0 y0 z0) (Vector3 x1 y1 z1) = sqrt $ (x0-x1)*(x0-x1) + (y0-y1)*(
 fromSpherical :: Float -> Float -> Vector3
 fromSpherical theta phi = Vector3 x y z
   where
-    x = (sin theta) * (cos phi)
-    y = (sin theta) * (sin phi)
+    x = sin theta * cos phi
+    y = sin theta * sin phi
     z = cos theta
 
 -- Matrices and linear transforms
@@ -101,13 +101,13 @@ solve2Eqs :: Eqs -> Maybe Point -- Gives only the first solution it finds.
 solve2Eqs = getEqPair >=> solve2Eq
 
 solve2Eq :: (Eq2, Eq2) -> Maybe Point -- Solve a pair of equations with two variables
-solve2Eq ((Eq2 eq00 eq01 val0), (Eq2 eq10 eq11 val1)) = liftA2 transform2 (inverse2x2 (Mat2 eq00 eq01 eq10 eq11)) (Just (val0, val1))
+solve2Eq (Eq2 eq00 eq01 val0, Eq2 eq10 eq11 val1) = liftA2 transform2 (inverse2x2 (Mat2 eq00 eq01 eq10 eq11)) (Just (val0, val1))
 
 getEqPair :: Eqs -> Maybe (Eq2, Eq2) -- Get a pair of equations with zero determinant from a list of equations
-getEqPair eqs = pairs eqs >>= (listToMaybe . dropWhile (zeroDeterminant))
+getEqPair eqs = pairs eqs >>= (listToMaybe . dropWhile zeroDeterminant)
   where
     pairs :: Eqs -> Maybe [(Eq2, Eq2)]
     pairs [] = Nothing
     pairs [_] = Nothing
-    pairs (x:xs) = Just (map ((,) x) xs) <> (pairs xs)
-    zeroDeterminant ((Eq2 eq00 eq01 _), (Eq2 eq10 eq11 _)) = determinant (Mat2 eq00 eq01 eq10 eq11) == 0
+    pairs (x:xs) = Just (map (x,) xs) <> pairs xs
+    zeroDeterminant (Eq2 eq00 eq01 _, Eq2 eq10 eq11 _) = determinant (Mat2 eq00 eq01 eq10 eq11) == 0

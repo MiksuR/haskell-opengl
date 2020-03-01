@@ -10,7 +10,8 @@ module Camera (
 
 import qualified Graphics.Rendering.OpenGL as GL
 import Control.Applicative (liftA2)
-import Data.Maybe (catMaybes)
+import Data.Either.Extra (eitherToMaybe)
+import Data.Maybe (catMaybes, mapMaybe)
 import System.Random
 
 import LinearEqs
@@ -31,26 +32,26 @@ data BlurParams = Blur Float Float Float
 renderNormal :: Renderer
 renderNormal screen cam scene = GL.renderPrimitive GL.Lines $
     GL.color (GL.Color3 1.0 1.0 1.0 :: GL.Color3 Float) >>
-    (sequence_ $ map lineify $ concatMap lineList scene)
+    mapM_ lineify (concatMap lineList scene)
   where
     lineList :: Shape -> [ScreenLine]
-    lineList shape = catMaybes $ map (projectEdge cam screen) shape
+    lineList = mapMaybe (projectEdge cam)
     vertexify :: Point -> IO ()
     vertexify (a, b) = GL.vertex $ GL.Vertex2 a (b*ratio)
-    ratio = (fromIntegral $ fst screen)/(fromIntegral $ snd screen)
+    ratio = fromIntegral (fst screen)/fromIntegral (snd screen)
     lineify :: ScreenLine -> IO ()
     lineify (a, b) = vertexify a >> vertexify b
 
 renderBlurred :: StdGen -> BlurParams -> Int -> Float -> Renderer
 renderBlurred rand params samples alpha screen cam scene = GL.renderPrimitive GL.Points $
     GL.color (GL.Color4 1.0 1.0 1.0 alpha :: GL.Color4 Float) >>
-    (sequence_ $ map vertexify $ concatMap (catMaybes . maybeBlur) scene)
+    mapM_ vertexify (concatMap (catMaybes . maybeBlur) scene)
   where
     vertexify :: Point -> IO ()
     vertexify (a, b) = GL.vertex $ GL.Vertex2 a (b*ratio)
-    ratio = (fromIntegral $ fst screen)/(fromIntegral $ snd screen)
+    ratio = fromIntegral (fst screen)/fromIntegral (snd screen)
     maybeBlur :: Shape -> [Maybe Point]
-    maybeBlur = concatMap (projectBlurredEdge rand params samples cam screen)
+    maybeBlur = concatMap (projectBlurredEdge rand params samples cam)
 
 {-- Under construction
 renderBlurredDistort :: Renderer
@@ -60,30 +61,26 @@ renderBlurredDistort = undefined
 -- Renderer helper functions
 -- TODO 1: Make it so that projectPoint returns Nothing when the target point is on the wrong side of the plane i.e. camera cannot see it.
 -- TODO 2: Come up with a way to handle the case when only the other end of an edge is Nothing in projectEdge function.
--- TODO 3: Maybe add orthographic projections later.
--- TODO 4: Remove scaling here and in render functions, because OpenGL assumes 1 x 1 screen.
-projectPoint :: Camera -> (Int, Int) -> Vector3 -> Maybe Point
-projectPoint camera screen point = (planeBasis plane) >>= (\basis -> planeCoordinates plane basis intersection)
+projectPoint :: Camera -> Vector3 -> Maybe Point
+projectPoint camera point = eitherToMaybe (planeBasis plane) >>= (\basis -> planeCoordinates plane basis intersection)
   where
-    center = (pos camera) `vAdd` ((dist camera) `sProd` (dir camera))
+    center = pos camera `vAdd` (dist camera `sProd` dir camera)
     plane = Shapes.Plane center (dir camera)
     intersection = linePlaneIntrsct (Shapes.Line (pos camera) point) plane
 
-projectDisplaced :: BlurParams -> Camera -> (Int, Int) -> (Vector3, StdGen) -> Maybe Point
-projectDisplaced (Blur f m e) camera screen (point, rand)= projectPoint camera screen displaced
+projectDisplaced :: BlurParams -> Camera -> (Vector3, StdGen) -> Maybe Point
+projectDisplaced (Blur f m e) camera (point, rand) = projectPoint camera displaced
   where
     displaced = rndSphere rand r `vAdd` point
     d = vDist (pos camera) point
-    r = (*) m $ (abs(f-d))**e
+    r = (*) m $ abs(f-d)**e
 
--- TODO: Come up with a smarted way of doing liftA2 (,) (f a) (f b)
-projectEdge :: Camera -> (Int, Int) -> Edge -> Maybe ScreenLine
-projectEdge camera screen (Edge a b) = liftA2 (,) (projectF a) (projectF b)
-  where projectF = projectPoint camera screen
+projectEdge :: Camera -> Edge -> Maybe ScreenLine
+projectEdge camera (Edge a b) = let projectF = projectPoint camera in liftA2 (,) (projectF a) (projectF b)
 
-projectBlurredEdge :: StdGen -> BlurParams -> Int -> Camera -> (Int, Int) -> Edge -> [Maybe Point]
-projectBlurredEdge rand params samples camera screen edge =
-  map (projectDisplaced params camera screen) (rndVectorsOnEdge rand samples edge)
+projectBlurredEdge :: StdGen -> BlurParams -> Int -> Camera -> Edge -> [Maybe Point]
+projectBlurredEdge rand params samples camera edge =
+  map (projectDisplaced params camera) (rndVectorsOnEdge rand samples edge)
 
 -- Random generators for blurred rendering.
 rndVectorsOnEdge :: StdGen -> Int -> Edge -> [(Vector3, StdGen)]
@@ -95,9 +92,9 @@ rndVectorsOnEdge rand samples edge = zip vectors (generators r2)
 rndSphere :: StdGen -> Float -> Vector3
 rndSphere rand r = sProd r $ fromSpherical theta phi
   where
-    (theta, newRand) = randomR (0, pi) (rand)
-    (phi, _) = randomR (0, 2*pi) (newRand)
+    (theta, newRand) = randomR (0, pi) rand
+    (phi, _) = randomR (0, 2*pi) newRand
 
 generators :: StdGen -> [StdGen]
-generators g = g1:(generators g2)
+generators g = g1 : generators g2
   where (g1, g2) = split g

@@ -26,10 +26,10 @@ type Shape = [Edge]
 
 -- Shape transformations
 rotateShape :: Float -> Float -> Float -> Shape -> Shape
-rotateShape x y z shape = map rotateEdges shape
+rotateShape x y z = map rotateEdges
     where
         rotateEdges (Edge a b) = Edge (rotatePoint a) (rotatePoint b)
-        rotatePoint = transform3 $ (rotationZ z) `mProd` (rotationY y) `mProd` (rotationX x)
+        rotatePoint = transform3 $ rotationZ z `mProd` rotationY y `mProd` rotationX x
 
 -- Calculations with lines and planes
 data Line = Line Vector3 Vector3
@@ -37,19 +37,19 @@ data Plane = Plane { p :: Vector3, n :: Vector3} -- point and normal
 
 linePlaneIntrsct :: Line -> Plane -> Vector3
 linePlaneIntrsct (Line l0 l1) plane = d `sProd` (l1 `vSubs` l0) `vAdd` l0
-  where d = (((p plane) `vSubs` l0) `vDot` (n plane))/(l1 `vSubs` l0 `vDot` (n plane))
+  where d = ((p plane `vSubs` l0) `vDot` n plane)/(l1 `vSubs` l0 `vDot` n plane)
 
 type Basis = (Vector3, Vector3)
 
-planeBasis :: Plane -> Maybe Basis
+planeBasis :: Plane -> Either String Basis
 planeBasis (Plane p n) = (,) <$> planeX <*> planeY
   where
-    planeX = vNormalize $ n `vCross` (Vector3 0 0 1)
-    planeY = (vCross <$> planeX <*> Just n) >>= vNormalize
+    planeX = vNormalize $ n `vCross` Vector3 0 0 1
+    planeY = (vCross <$> planeX <*> Right n) >>= vNormalize
 
 -- Given a plane, a basis on the plane and a point on the plane, return a 2D coordinates of the point on the plane.
 planeCoordinates :: Plane -> Basis -> Vector3 -> Maybe Point
-planeCoordinates (Plane (Vector3 px py pz) _) ((Vector3 xx xy xz), (Vector3 yx yy yz)) (Vector3 a b c) = solve2Eqs [eq0, eq1, eq2]
+planeCoordinates (Plane (Vector3 px py pz) _) (Vector3 xx xy xz, Vector3 yx yy yz) (Vector3 a b c) = solve2Eqs [eq0, eq1, eq2]
   where
     eq0 = Eq2 xx yx (a-px)
     eq1 = Eq2 xy yy (b-py)
@@ -59,7 +59,7 @@ lerp :: Edge -> Float -> Vector3
 lerp (Edge a b) t = vAdd a $ sProd t $ b `vSubs` a
 
 -- Icosahedron points
-phi = (1 + (sqrt $ 5))/2
+phi = (1 + sqrt 5)/2
 ip1 = Vector3 1 0 phi
 ip2 = Vector3 (-1) 0 phi
 ip3 = Vector3 0 phi 1
