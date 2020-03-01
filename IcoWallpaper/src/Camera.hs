@@ -10,6 +10,7 @@ module Camera (
 
 import qualified Graphics.Rendering.OpenGL as GL
 import Control.Applicative (liftA2)
+import Control.Monad (guard)
 import Data.Either.Extra (eitherToMaybe)
 import Data.Maybe (catMaybes, mapMaybe)
 import System.Random
@@ -59,14 +60,13 @@ renderBlurredDistort = undefined
 --}
 
 -- Renderer helper functions
--- TODO 1: Make it so that projectPoint returns Nothing when the target point is on the wrong side of the plane i.e. camera cannot see it.
--- TODO 2: Come up with a way to handle the case when only the other end of an edge is Nothing in projectEdge function.
 projectPoint :: Camera -> Vector3 -> Maybe Point
-projectPoint camera point = eitherToMaybe (planeBasis plane) >>= (\basis -> planeCoordinates plane basis intersection)
+projectPoint camera point = guard checkSide >> eitherToMaybe (planeBasis plane) >>= (\basis -> planeCoordinates plane basis intersection)
   where
-    center = pos camera `vAdd` (dist camera `sProd` dir camera)
+    center = pos camera `vAdd` (dist camera `sProd` dir camera) -- Calculates the center point of the plane where the scene will be projected on to
     plane = Shapes.Plane center (dir camera)
     intersection = linePlaneIntrsct (Shapes.Line (pos camera) point) plane
+    checkSide = dir camera `vDot` (point `vSubs` pos camera) >= 0 -- Checks wether the point is in front or behind of the camera
 
 projectDisplaced :: BlurParams -> Camera -> (Vector3, StdGen) -> Maybe Point
 projectDisplaced (Blur f m e) camera (point, rand) = projectPoint camera displaced
@@ -75,6 +75,9 @@ projectDisplaced (Blur f m e) camera (point, rand) = projectPoint camera displac
     d = vDist (pos camera) point
     r = (*) m $ abs(f-d)**e
 
+-- TODO: Come up with a way to handle the case when only the other end of an edge is Nothing in projectEdge function.
+-- Basically you'd have to take the intersection of the plane and the line between a and b,
+-- and use this new point as the other end of the edge to calculate the projection.
 projectEdge :: Camera -> Edge -> Maybe ScreenLine
 projectEdge camera (Edge a b) = let projectF = projectPoint camera in liftA2 (,) (projectF a) (projectF b)
 

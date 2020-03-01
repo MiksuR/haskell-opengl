@@ -38,8 +38,8 @@ scene time = [rotateIco uprightIco]
     rotateIco = rotateShape (-(atan $ 1/phi)) 0 0 . rotateShape 0 0 (time/2)
 
 safeCamera :: ExceptT String IO Camera
-safeCamera = except $ (\dir -> Camera (Vector3 3 (-1.8) (1.6)) dir 0.95) <$> vNormalize (Vector3 (0) 0 (0))
--- safeCamera = ExceptT . return $ (\dir -> Camera (Vector3 3 (-1.8) (1.6)) dir 0.95) <$> vNormalize (Vector3 (-1) 0 (-0.2))
+safeCamera = except $ (\dir -> Camera (Vector3 (1) 0 0) dir 0.95) <$> vNormalize (Vector3 (-1) 0 0)
+-- safeCamera = except $ (\dir -> Camera (Vector3 3 (-1.8) (1.6)) dir 0.95) <$> vNormalize (Vector3 (-1) 0 (-0.2))
 
 unsafeCamera :: Camera
 unsafeCamera = Camera (Vector3 3 (0) (1.6)) (norm $ Vector3 (-1) (-0.5) (-0.2)) 0.95
@@ -54,11 +54,11 @@ drawScene w size= do
   GL.loadIdentity
 
   exceptCam <- runExceptT safeCamera
-  rand <- newStdGen
+  -- rand <- newStdGen
   case exceptCam of
     Left err -> putStrLn err
-    Right cam -> renderBlurred rand (Blur 3.5 0.2 1.3) 1000 0.15 size cam (scene . double2Float $ time)
-    -- Right cam -> renderNormal size cam (scene . double2Float $ time)
+    -- Right cam -> renderBlurred rand (Blur 3.5 0.2 1.3) 1000 0.15 size cam (scene . double2Float $ time)
+    Right cam -> renderNormal size cam (scene . double2Float $ time)
 
   GL.get GL.errors >>= mapM_ print
   GL.flush
