@@ -58,7 +58,7 @@ executable IcoWallpaper
 
   -- Other library packages from which modules are imported.
   -- TODO: Cleanup dependency list
-  build-depends:       base >=4.12 && <4.13, OpenGL==3.0.3.0, GLFW-b==3.2.1.1, random==1.1, transformers==0.5.6.2, extra>=1.5.1
+  build-depends:       base >=4.12 && <4.13, OpenGL==3.0.3.0, GLFW-b==3.2.1.1, random==1.1, transformers==0.5.6.2, extra>=1.5.1, gl-capture, bytestring
 
   -- Directories containing source files.
   hs-source-dirs:      src

@@ -3,7 +3,14 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    hackage: gl-capture-0.1.0.0@sha256:0fe7a58a8b692e4ac23cc816667d2a47fd8352a3e812c43cdae1240c0117d657,827
+    pantry-tree:
+      size: 230
+      sha256: 7b610e8907b3896b3ee64d5ab65259f76386e3776bd5c8f0862701cec5a8bf62
+  original:
+    hackage: gl-capture-0.1.0.0
 snapshots:
 - completed:
     size: 524162
