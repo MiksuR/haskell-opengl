@@ -93,10 +93,10 @@ rndVectorsOnEdge rand samples edge = zip vectors (generators r2)
     (r1, r2) = split rand
 
 rndSphere :: StdGen -> Float -> Vector3
-rndSphere rand r = sProd r $ fromSpherical theta phi
+rndSphere rand r = sProd r $ fromSpherical (acos $ 2*v - 1) (2*pi*u)
   where
-    (theta, newRand) = randomR (0, pi) rand
-    (phi, _) = randomR (0, 2*pi) newRand
+    (u, newRand) = randomR (0, 1) rand
+    (v, _) = randomR (0, 1) newRand
 
 generators :: StdGen -> [StdGen]
 generators g = g1 : generators g2
