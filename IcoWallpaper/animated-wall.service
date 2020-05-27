@@ -1,0 +1,7 @@
+[Unit]
+Description=service running the icosahedron wallpaper
+
+[Service]
+Type=simple
+User=user
+ExecStart=env DISPLAY=:0 xwinwrap -ov -fs -ni -- mpv -wid WID --no-config --loop --no-border --vd-lavc-fast --x11-bypass-compositor=no --aid=no --vo=xv --hwdec=auto --really-quiet /home/user/Videos/wall.avi

@@ -1,0 +1,3 @@
+# Control the animated-wall service based on whether the AC is pulgged in or not
+SUBSYSTEM=="power_supply",ATTRS{online}=="1",RUN+="/bin/sudo /usr/bin/systemctl start animated-wall.service > /home/miksu/udev_log"
+SUBSYSTEM=="power_supply",ATTRS{online}=="0",RUN+="/bin/sudo /usr/bin/systemctl stop animated-wall.service > /home/miksu/udev_log"
